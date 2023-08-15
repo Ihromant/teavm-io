@@ -9,16 +9,20 @@ import org.teavm.metaprogramming.CompileTime;
 
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @CompileTime
 @RunWith(TeaVMTestRunner.class)
 @SkipJVM
 public class ConvertersTest {
     private final String sample = "{\"a\":1,\"b\":\"abc\",\"c\":5,\"d\":true,\"e\":{\"t\":\"def\"}}";
+    private final String sampleNull = "{\"a\":0,\"d\":true}";
+    private final String sampleNested = "{\"a\":0,\"d\":true,\"e\":{}}";
+    private final String sampleRecord = "{\"a\":\"abc\",\"b\":3}";
+    private final String sampleRecordNull = "{\"b\":1}";
+
     @Test
-    public void jsToJava() {
+    public void commonJavaToJs() {
         TestClass obj = new TestClass();
         obj.a = 1;
         obj.b = "abc";
@@ -31,10 +35,56 @@ public class ConvertersTest {
     }
 
     @Test
-    public void javaToJs() {
+    public void recordJavaToJs() {
+        TestRecord obj = new TestRecord("abc", 3);
+        assertEquals(sampleRecord, JSON.stringify(Converters.javaToJs(obj)));
+        obj = new TestRecord(null, 1);
+        assertEquals(sampleRecordNull, JSON.stringify(Converters.javaToJs(obj)));
+    }
+
+    @Test
+    public void nullableJavaToJs() {
+        TestClass obj = new TestClass();
+        obj.d = true;
+        assertEquals(sampleNull, JSON.stringify(Converters.javaToJs(obj)));
+        obj.e = new TestChildClass();
+        assertEquals(sampleNested, JSON.stringify(Converters.javaToJs(obj)));
+    }
+
+    @Test
+    public void commonJsToJava() {
         TestClass obj = (TestClass) Converters.jsToJava(JSON.parse(sample), TestClass.class);
-        assertEquals(1, obj.a); // TODO etc.
+        assertEquals(1, obj.a);
+        assertEquals("abc", obj.b);
+        assertEquals(Integer.valueOf(5), obj.c);
         assertTrue(obj.d);
+        assertNotNull(obj.e);
+        assertEquals("def", obj.e.t);
+        assertNull(obj.cache);
+    }
+
+    @Test
+    public void recordJsToJava() {
+        TestRecord obj = (TestRecord) Converters.jsToJava(JSON.parse(sampleRecord), TestRecord.class);
+        assertEquals("abc", obj.a);
+        assertEquals(3, obj.b);
+        obj = (TestRecord) Converters.jsToJava(JSON.parse(sampleRecordNull), TestRecord.class);
+        assertNull(obj.a);
+        assertEquals(1, obj.b);
+    }
+
+    @Test
+    public void nullableJsToJava() {
+        TestClass obj = (TestClass) Converters.jsToJava(JSON.parse(sampleNull), TestClass.class);
+        assertEquals(0, obj.a);
+        assertNull(obj.b);
+        assertNull(obj.c);
+        assertTrue(obj.d);
+        assertNull(obj.e);
+        assertNull(obj.cache);
+        obj = (TestClass) Converters.jsToJava(JSON.parse(sampleNested), TestClass.class);
+        assertNotNull(obj.e);
+        assertNull(obj.e.t);
     }
 
     private static class TestClass implements Message {
