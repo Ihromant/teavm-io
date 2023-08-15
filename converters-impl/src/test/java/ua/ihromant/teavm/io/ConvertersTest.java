@@ -16,7 +16,7 @@ import static org.junit.Assert.assertTrue;
 @RunWith(TeaVMTestRunner.class)
 @SkipJVM
 public class ConvertersTest {
-    private final String sample = ""; // TODO
+    private final String sample = "{\"a\":1,\"b\":\"abc\",\"c\":5,\"d\":true,\"e\":{\"t\":\"def\"}}";
     @Test
     public void jsToJava() {
         TestClass obj = new TestClass();
