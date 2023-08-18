@@ -119,9 +119,10 @@ public class DeserializerGenerator {
         }
         ReflectClass<?> refElem = Metaprogramming.findClass(elementInfo);
         return Metaprogramming.proxy(Deserializer.class, (instance, method, args) -> {
-            Value<JSArray<?>> value = Metaprogramming.emit(() -> (JSArray<?>) args[0]);
+            Value<JSArray<? extends JSObject>> value = Metaprogramming.emit(
+                    () -> (JSArray<? extends JSObject>) args[0]);
             Metaprogramming.exit(() -> {
-                JSArray<?> jsArray = value.get();
+                JSArray<? extends JSObject> jsArray = value.get();
                 int length = jsArray.getLength();
                 Object[] result = refElem.createArray(length);
                 Deserializer itemDeserializer = childDeserializer.get();
