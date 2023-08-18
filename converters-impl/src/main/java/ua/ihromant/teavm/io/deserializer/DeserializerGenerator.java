@@ -119,7 +119,7 @@ public class DeserializerGenerator {
         }
         ReflectClass<?> refElem = Metaprogramming.findClass(elementInfo);
         return Metaprogramming.proxy(Deserializer.class, (instance, method, args) -> {
-            Value<JSArray<? extends JSObject>> value = Metaprogramming.emit(
+            @SuppressWarnings("unchecked") Value<JSArray<? extends JSObject>> value = Metaprogramming.emit(
                     () -> (JSArray<? extends JSObject>) args[0]);
             Metaprogramming.exit(() -> {
                 JSArray<? extends JSObject> jsArray = value.get();
