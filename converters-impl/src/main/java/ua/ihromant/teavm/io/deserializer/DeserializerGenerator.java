@@ -122,7 +122,7 @@ public class DeserializerGenerator {
             @SuppressWarnings("unchecked") Value<JSArray<JSObject>> value = Metaprogramming.emit(
                     () -> (JSArray<JSObject>) args[0]);
             Metaprogramming.exit(() -> {
-                JSArray<? extends JSObject> jsArray = value.get();
+                JSArray<JSObject> jsArray = value.get();
                 int length = jsArray.getLength();
                 Object[] result = refElem.createArray(length);
                 Deserializer itemDeserializer = childDeserializer.get();
