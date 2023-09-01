@@ -20,6 +20,7 @@ public class ConvertersTest {
     private final String sampleNested = "{\"a\":0,\"d\":true,\"e\":{}}";
     private final String sampleRecord = "{\"a\":\"abc\",\"b\":3}";
     private final String sampleRecordNull = "{\"b\":1}";
+    private final String sampleArrayRecord = "{\"moves\":[0,1,0],\"childs\":[{}]}";
 
     @Test
     public void commonJavaToJs() {
@@ -87,6 +88,20 @@ public class ConvertersTest {
         assertNull(obj.e.t);
     }
 
+    @Test
+    public void testArrayRecord() {
+        TestArrayRecord record = new TestArrayRecord(new Move[]{Move.LEFT, Move.RIGHT, Move.LEFT},
+                new TestChildClass[]{new TestChildClass()});
+        String s = JSON.stringify(Converters.javaToJs(record));
+        assertEquals(sampleArrayRecord, s);
+        TestArrayRecord reparsed = (TestArrayRecord) Converters.jsToJava(JSON.parse(s), TestArrayRecord.class);
+        assertArrayEquals(new Move[]{Move.LEFT, Move.RIGHT, Move.LEFT}, reparsed.moves());
+    }
+
+    private enum Move {
+        LEFT, RIGHT
+    }
+
     private static class TestClass implements Message {
         private int a;
         private String b;
@@ -112,8 +127,16 @@ public class ConvertersTest {
         }
     }
 
+    record TestArrayRecord(Move[] moves, TestChildClass[] childs) implements Message {
+        @Override
+        public MessageType getMsType() {
+            return TestMessageType.TEST_ARRAY_RECORD;
+        }
+    }
+
     enum TestMessageType implements MessageType {
-        TEST_CLASS(TestClass.class), TEST_RECORD(TestRecord.class);
+        TEST_CLASS(TestClass.class), TEST_RECORD(TestRecord.class),
+        TEST_ARRAY_RECORD(TestArrayRecord.class);
         private final Class<? extends Message> cls;
 
         TestMessageType(Class<? extends Message> cls) {
