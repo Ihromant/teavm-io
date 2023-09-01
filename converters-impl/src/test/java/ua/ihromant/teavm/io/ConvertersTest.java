@@ -2,6 +2,9 @@ package ua.ihromant.teavm.io;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.teavm.jso.JSObject;
+import org.teavm.jso.core.JSArray;
+import org.teavm.jso.core.JSNumber;
 import org.teavm.jso.json.JSON;
 import org.teavm.junit.SkipJVM;
 import org.teavm.junit.TeaVMTestRunner;
@@ -96,6 +99,15 @@ public class ConvertersTest {
         assertEquals(sampleArrayRecord, s);
         TestArrayRecord reparsed = (TestArrayRecord) Converters.jsToJava(JSON.parse(s), TestArrayRecord.class);
         assertArrayEquals(new Move[]{Move.LEFT, Move.RIGHT, Move.LEFT}, reparsed.moves());
+    }
+
+    @Test
+    public void writeArray() {
+        JSArray<JSObject> arr = JSArray.create();
+        for (int i = 0; i < 3; i++) {
+            arr.push(JSNumber.valueOf(Move.values()[(i + 1) % 2].ordinal()));
+        }
+        assertEquals("[1,0,1]", JSON.stringify(arr));
     }
 
     private enum Move {
