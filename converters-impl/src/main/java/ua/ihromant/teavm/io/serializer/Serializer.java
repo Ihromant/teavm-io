@@ -43,6 +43,16 @@ public interface Serializer {
         };
     }
 
+    static Serializer arraySerializer(Serializer elemSerializer) {
+        return jo -> {
+            JSArray<JSObject> result = JSArray.create();
+            for (Object o : (Object[]) jo) {
+                result.push(elemSerializer.write(o));
+            }
+            return result;
+        };
+    }
+
     static Serializer setSerializer(Serializer elemSerializer) {
         return jo -> {
             JSArray<JSObject> result = JSArray.create();

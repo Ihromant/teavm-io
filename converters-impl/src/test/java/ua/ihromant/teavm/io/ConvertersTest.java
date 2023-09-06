@@ -23,7 +23,7 @@ public class ConvertersTest {
     private final String sampleNested = "{\"a\":0,\"d\":true,\"e\":{}}";
     private final String sampleRecord = "{\"a\":\"abc\",\"b\":3}";
     private final String sampleRecordNull = "{\"b\":1}";
-    private final String sampleArrayRecord = "{\"moves\":[0,1,0],\"childs\":[{}]}";
+    private final String sampleArrayRecord = "{\"moves\":[0,1,0]}";
 
     @Test
     public void commonJavaToJs() {
@@ -94,7 +94,7 @@ public class ConvertersTest {
     @Test
     public void testArrayRecord() {
         TestArrayRecord record = new TestArrayRecord(new Move[]{Move.LEFT, Move.RIGHT, Move.LEFT},
-                new TestChildClass[]{new TestChildClass()});
+                null);
         String s = JSON.stringify(Converters.javaToJs(record));
         assertEquals(sampleArrayRecord, s);
         TestArrayRecord reparsed = (TestArrayRecord) Converters.jsToJava(JSON.parse(s), TestArrayRecord.class);

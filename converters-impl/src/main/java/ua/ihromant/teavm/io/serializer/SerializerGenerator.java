@@ -99,24 +99,12 @@ public class SerializerGenerator {
 
     private static Value<Serializer> buildArraySerializer(Class<?> cls) {
         Class<?> elementInfo = cls.componentType();
-        Value<Serializer> childSerializer = getSerializer(elementInfo);
-        if (childSerializer == null) {
+        Value<Serializer> elemSerializer = getSerializer(cls.componentType());
+        if (elemSerializer == null) {
             Metaprogramming.getDiagnostics().error(Metaprogramming.getLocation(), "No serializer for " + elementInfo.getName());
         }
-        ReflectClass<?> refCl = Metaprogramming.findClass(cls);
-        return Metaprogramming.proxy(Serializer.class, (instance, method, args) -> {
-            Value<Object> value = args[0];
-            Metaprogramming.exit(() -> {
-                JSArray<JSObject> target = JSArray.create();
-                int sz = refCl.getArrayLength(value.get());
-                Serializer itemSerializer = childSerializer.get();
-                for (int i = 0; i < sz; ++i) {
-                    Object component = refCl.getArrayElement(value.get(), i);
-                    target.push(itemSerializer.write(component));
-                }
-                return target;
-            });
-        });
+        Value<Serializer> notNull = Metaprogramming.emit(() -> Serializer.arraySerializer(elemSerializer.get()));
+        return Metaprogramming.emit(() -> Serializer.nullable(notNull.get()));
     }
 
     private static Value<Serializer> buildObjectSerializer(Class<?> cls) {
