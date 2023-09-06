@@ -18,9 +18,9 @@ import static org.junit.Assert.*;
 @RunWith(TeaVMTestRunner.class)
 @SkipJVM
 public class ConvertersTest {
-    private final String sample = "{\"a\":1,\"b\":\"abc\",\"c\":5,\"d\":true,\"e\":{\"t\":\"def\"}}";
-    private final String sampleNull = "{\"a\":0,\"d\":true}";
-    private final String sampleNested = "{\"a\":0,\"d\":true,\"e\":{}}";
+    private final String sample = "{\"a\":[1],\"b\":\"abc\",\"c\":5,\"d\":true,\"e\":{\"t\":\"def\"}}";
+    private final String sampleNull = "{\"d\":true}";
+    private final String sampleNested = "{\"d\":true,\"e\":{}}";
     private final String sampleRecord = "{\"a\":\"abc\",\"b\":3}";
     private final String sampleRecordNull = "{\"b\":1}";
     private final String sampleArrayRecord = "{\"moves\":[0,1,0]}";
@@ -28,7 +28,7 @@ public class ConvertersTest {
     @Test
     public void commonJavaToJs() {
         TestClass obj = new TestClass();
-        obj.a = 1;
+        obj.a = new int[]{1};
         obj.b = "abc";
         obj.c = 5;
         obj.d = true;
@@ -58,7 +58,7 @@ public class ConvertersTest {
     @Test
     public void commonJsToJava() {
         TestClass obj = (TestClass) Converters.jsToJava(JSON.parse(sample), TestClass.class);
-        assertEquals(1, obj.a);
+        assertArrayEquals(new int[]{1}, obj.a);
         assertEquals("abc", obj.b);
         assertEquals(Integer.valueOf(5), obj.c);
         assertTrue(obj.d);
@@ -80,7 +80,7 @@ public class ConvertersTest {
     @Test
     public void nullableJsToJava() {
         TestClass obj = (TestClass) Converters.jsToJava(JSON.parse(sampleNull), TestClass.class);
-        assertEquals(0, obj.a);
+        assertNull(obj.a);
         assertNull(obj.b);
         assertNull(obj.c);
         assertTrue(obj.d);
@@ -115,7 +115,7 @@ public class ConvertersTest {
     }
 
     private static class TestClass implements Message {
-        private int a;
+        private int[] a;
         private String b;
         private Integer c;
         private boolean d;

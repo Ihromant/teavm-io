@@ -46,8 +46,25 @@ public interface Serializer {
     static Serializer arraySerializer(Serializer elemSerializer) {
         return jo -> {
             JSArray<JSObject> result = JSArray.create();
-            for (Object o : (Object[]) jo) {
-                result.push(elemSerializer.write(o));
+            if (jo instanceof int[] ia) {
+                for (int i : ia) {
+                    result.push(elemSerializer.write(i));
+                }
+            }
+            if (jo instanceof boolean[] ba) {
+                for (boolean b : ba) {
+                    result.push(elemSerializer.write(b));
+                }
+            }
+            if (jo instanceof double[] da) {
+                for (double d : da) {
+                    result.push(elemSerializer.write(d));
+                }
+            }
+            if (jo instanceof Object[] oa) {
+                for (Object o : oa) {
+                    result.push(elemSerializer.write(o));
+                }
             }
             return result;
         };
