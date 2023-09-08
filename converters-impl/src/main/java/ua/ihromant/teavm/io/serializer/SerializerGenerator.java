@@ -1,12 +1,10 @@
 package ua.ihromant.teavm.io.serializer;
 
 import org.teavm.jso.JSObject;
-import org.teavm.jso.core.JSArray;
 import org.teavm.jso.core.JSMapLike;
 import org.teavm.jso.core.JSObjects;
 import org.teavm.metaprogramming.CompileTime;
 import org.teavm.metaprogramming.Metaprogramming;
-import org.teavm.metaprogramming.ReflectClass;
 import org.teavm.metaprogramming.Value;
 import org.teavm.metaprogramming.reflect.ReflectField;
 import org.teavm.metaprogramming.reflect.ReflectMethod;

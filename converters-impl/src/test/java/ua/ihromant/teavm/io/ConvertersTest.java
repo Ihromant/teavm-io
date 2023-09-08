@@ -93,24 +93,22 @@ public class ConvertersTest {
 
     @Test
     public void testArrayRecord() {
-        TestArrayRecord record = new TestArrayRecord(new Move[]{Move.LEFT, Move.RIGHT, Move.LEFT},
-                null);
-        String s = JSON.stringify(Converters.javaToJs(record));
+        TestArrayRecord parsed = (TestArrayRecord) Converters.jsToJava(JSON.parse(sampleArrayRecord), TestArrayRecord.class);
+        assertArrayEquals(new TestMove[]{TestMove.LEFT, TestMove.RIGHT, TestMove.LEFT}, parsed.moves());
+        String s = JSON.stringify(Converters.javaToJs(parsed));
         assertEquals(sampleArrayRecord, s);
-        TestArrayRecord reparsed = (TestArrayRecord) Converters.jsToJava(JSON.parse(s), TestArrayRecord.class);
-        assertArrayEquals(new Move[]{Move.LEFT, Move.RIGHT, Move.LEFT}, reparsed.moves());
     }
 
     @Test
     public void writeArray() {
         JSArray<JSObject> arr = JSArray.create();
         for (int i = 0; i < 3; i++) {
-            arr.push(JSNumber.valueOf(Move.values()[(i + 1) % 2].ordinal()));
+            arr.push(JSNumber.valueOf(TestMove.values()[(i + 1) % 2].ordinal()));
         }
         assertEquals("[1,0,1]", JSON.stringify(arr));
     }
 
-    private enum Move {
+    private enum TestMove {
         LEFT, RIGHT
     }
 
@@ -121,11 +119,6 @@ public class ConvertersTest {
         private boolean d;
         private TestChildClass e;
         private transient Map<Object, Object> cache;
-
-        @Override
-        public MessageType getMsType() {
-            return TestMessageType.TEST_CLASS;
-        }
     }
 
     private static class TestChildClass {
@@ -133,31 +126,8 @@ public class ConvertersTest {
     }
 
     record TestRecord(String a, int b) implements Message {
-        @Override
-        public MessageType getMsType() {
-            return TestMessageType.TEST_RECORD;
-        }
     }
 
-    record TestArrayRecord(Move[] moves, TestChildClass[] childs) implements Message {
-        @Override
-        public MessageType getMsType() {
-            return TestMessageType.TEST_ARRAY_RECORD;
-        }
-    }
-
-    enum TestMessageType implements MessageType {
-        TEST_CLASS(TestClass.class), TEST_RECORD(TestRecord.class),
-        TEST_ARRAY_RECORD(TestArrayRecord.class);
-        private final Class<? extends Message> cls;
-
-        TestMessageType(Class<? extends Message> cls) {
-            this.cls = cls;
-        }
-
-        @Override
-        public Class<? extends Message> getCls() {
-            return cls;
-        }
+    record TestArrayRecord(TestMove[] moves, TestChildClass[] children) implements Message {
     }
 }
