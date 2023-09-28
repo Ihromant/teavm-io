@@ -56,11 +56,6 @@ public interface Serializer {
                     result.push(elemSerializer.write(b));
                 }
             }
-            if (jo instanceof double[] da) {
-                for (double d : da) {
-                    result.push(elemSerializer.write(d));
-                }
-            }
             if (jo instanceof Object[] oa) {
                 for (Object o : oa) {
                     result.push(elemSerializer.write(o));
