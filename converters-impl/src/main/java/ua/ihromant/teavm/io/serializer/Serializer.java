@@ -13,11 +13,23 @@ import java.util.Map;
 import java.util.Set;
 
 public interface Serializer {
-    Serializer BOOLEAN = jo -> JSBoolean.valueOf((boolean) jo);
-    Serializer INT = jo -> JSNumber.valueOf((int) jo);
-    Serializer DOUBLE = jo -> JSNumber.valueOf((double) jo);
+    Serializer BOOLEAN = jo -> Serializer.fromBoolean((boolean) jo);
+    Serializer INT = jo -> Serializer.fromInt((int) jo);
+    Serializer DOUBLE = jo -> Serializer.fromDouble((double) jo);
     Serializer ENUM = jo -> JSNumber.valueOf(((Enum<?>) jo).ordinal());
     Serializer STRING = jo -> JSString.valueOf((String) jo);
+
+    static JSNumber fromDouble(double d) {
+        return JSNumber.valueOf(d);
+    }
+
+    static JSNumber fromInt(int i) {
+        return JSNumber.valueOf(i);
+    }
+
+    static JSBoolean fromBoolean(boolean b) {
+        return JSBoolean.valueOf(b);
+    }
 
     static Serializer nullable(Serializer base) {
         return jo -> jo == null ? JSObjects.undefined() : base.write(jo);
@@ -48,12 +60,17 @@ public interface Serializer {
             JSArray<JSObject> result = JSArray.create();
             if (jo instanceof int[] ia) {
                 for (int i : ia) {
-                    result.push(elemSerializer.write(i));
+                    result.push(fromInt(i));
                 }
             }
             if (jo instanceof boolean[] ba) {
                 for (boolean b : ba) {
-                    result.push(elemSerializer.write(b));
+                    result.push(fromBoolean(b));
+                }
+            }
+            if (jo instanceof double[] da) {
+                for (double d : da) {
+                    result.push(fromDouble(d));
                 }
             }
             if (jo instanceof Object[] oa) {
