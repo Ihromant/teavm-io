@@ -47,7 +47,7 @@ public interface Serializer {
 
     static Serializer listSerializer(Serializer elemSerializer) {
         return jo -> {
-            JSArray<JSObject> result = JSArray.create();
+            JSArray<JSObject> result = new JSArray<>();
             for (Object o : (List<?>) jo) {
                 result.push(elemSerializer.write(o));
             }
@@ -57,7 +57,7 @@ public interface Serializer {
 
     static Serializer arraySerializer(Serializer elemSerializer) {
         return jo -> {
-            JSArray<JSObject> result = JSArray.create();
+            JSArray<JSObject> result = new JSArray<>();
             if (jo instanceof int[] ia) {
                 for (int i : ia) {
                     result.push(fromInt(i));
@@ -84,7 +84,7 @@ public interface Serializer {
 
     static Serializer setSerializer(Serializer elemSerializer) {
         return jo -> {
-            JSArray<JSObject> result = JSArray.create();
+            JSArray<JSObject> result = new JSArray<>();
             for (Object o : (Set<?>) jo) {
                 result.push(elemSerializer.write(o));
             }

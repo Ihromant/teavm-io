@@ -101,7 +101,7 @@ public class ConvertersTest {
 
     @Test
     public void writeArray() {
-        JSArray<JSObject> arr = JSArray.create();
+        JSArray<JSObject> arr = new JSArray<>();
         for (int i = 0; i < 3; i++) {
             arr.push(JSNumber.valueOf(TestMove.values()[(i + 1) % 2].ordinal()));
         }
