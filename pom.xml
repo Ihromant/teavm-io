@@ -18,7 +18,7 @@
         <maven.compiler.target>21</maven.compiler.target>
         <maven.compiler.source>21</maven.compiler.source>
         <jackson.version>2.15.2</jackson.version>
-        <teavm.version>0.10.0-dev-12</teavm.version>
+        <teavm.version>0.10.0</teavm.version>
         <junit.version>4.13.2</junit.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
