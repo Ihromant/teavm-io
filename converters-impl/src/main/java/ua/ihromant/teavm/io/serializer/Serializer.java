@@ -7,6 +7,7 @@ import org.teavm.jso.core.JSMapLike;
 import org.teavm.jso.core.JSNumber;
 import org.teavm.jso.core.JSObjects;
 import org.teavm.jso.core.JSString;
+import org.teavm.jso.core.JSUndefined;
 
 import java.util.List;
 import java.util.Map;
@@ -32,7 +33,7 @@ public interface Serializer {
     }
 
     static Serializer nullable(Serializer base) {
-        return jo -> jo == null ? JSObjects.undefined() : base.write(jo);
+        return jo -> jo == null ? JSUndefined.instance() : base.write(jo);
     }
 
     static Serializer mapSerializer(Serializer valueSerializer) {
